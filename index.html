@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Respostas</title>
+<style>
+:root{
+  --bg:#061522;
+  --panel:#0d2941;
+  --yes:#1fc77a;
+  --no:#ff5f5f;
+  --maybe:#f5c84b;
+  --text:#f7fbff;
+  --muted:#9fb5c8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; padding:24px;
+  font-family:Arial,Helvetica,sans-serif; color:var(--text);
+  background:radial-gradient(circle at top,#17425f 0%,#071827 55%,#04111b 100%);
+  display:flex; align-items:center; justify-content:center;
+}
+.app{width:min(1100px,100%); display:grid; gap:22px}
+h1{margin:0;text-align:center;font-size:clamp(30px,4vw,48px)}
+.sub{text-align:center;color:var(--muted);margin-top:-12px;font-size:18px}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+button{
+  border:0;border-radius:18px;padding:20px 16px;
+  font-size:clamp(20px,2.5vw,30px);font-weight:900;cursor:pointer;
+  box-shadow:0 12px 28px rgba(0,0,0,.28);
+  transition:.15s transform,.15s filter;
+}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+button:active{transform:scale(.99)}
+.bsim{background:var(--yes);color:white}
+.bnao{background:var(--no);color:white}
+.bimp{background:var(--maybe);color:#2b2200}
+.display{
+  min-height:440px;border-radius:30px;background:linear-gradient(180deg,#0d2740,#123851);
+  border:3px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;text-align:center;padding:30px;
+  box-shadow:0 25px 60px rgba(0,0,0,.35);transition:.2s;
+}
+.answer{
+  font-size:clamp(64px,12vw,160px);font-weight:900;letter-spacing:2px;
+  transition:.2s;text-shadow:0 8px 28px rgba(0,0,0,.4)
+}
+.idle{font-size:clamp(28px,5vw,56px);color:var(--muted);letter-spacing:0;text-shadow:none}
+.sim-active{border-color:rgba(31,199,122,.8);box-shadow:0 0 55px rgba(31,199,122,.28)}
+.nao-active{border-color:rgba(255,95,95,.8);box-shadow:0 0 55px rgba(255,95,95,.28)}
+.imp-active{border-color:rgba(245,200,75,.85);box-shadow:0 0 55px rgba(245,200,75,.28)}
+.sim-text{color:#e3fff1;text-shadow:0 0 25px rgba(31,199,122,.95),0 0 60px rgba(31,199,122,.65)}
+.nao-text{color:#ffe5e5;text-shadow:0 0 25px rgba(255,95,95,.95),0 0 60px rgba(255,95,95,.65)}
+.imp-text{color:#fff4bf;text-shadow:0 0 25px rgba(245,200,75,.95),0 0 60px rgba(245,200,75,.65)}
+.hint{text-align:center;color:var(--muted);font-size:14px}
+@media(max-width:700px){
+  .controls{grid-template-columns:1fr}
+  .display{min-height:330px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Painel de Respostas</h1>
+  <div class="sub">Quem sou eu tributário?</div>
+
+  <div class="controls">
+    <button class="bsim" onclick="showAnswer('SIM')">SIM</button>
+    <button class="bnao" onclick="showAnswer('NÃO')">NÃO</button>
+    <button class="bimp" onclick="showAnswer('IMPRECISÃO')">IMPRECISÃO</button>
+  </div>
+
+  <div id="display" class="display">
+    <div id="answer" class="answer idle">AGUARDANDO RESPOSTA</div>
+  </div>
+
+  <div class="hint">Atalhos: 1 = SIM • 2 = NÃO • 3 = IMPRECISÃO • Espaço = limpar</div>
+</div>
+
+<script>
+const display = document.getElementById('display');
+const answer = document.getElementById('answer');
+
+function showAnswer(value){
+  display.className='display';
+  answer.className='answer';
+
+  if(value==='SIM'){
+    display.classList.add('sim-active');
+    answer.classList.add('sim-text');
+  }else if(value==='NÃO'){
+    display.classList.add('nao-active');
+    answer.classList.add('nao-text');
+  }else{
+    display.classList.add('imp-active');
+    answer.classList.add('imp-text');
+  }
+  answer.textContent=value;
+}
+
+function clearAnswer(){
+  display.className='display';
+  answer.className='answer idle';
+  answer.textContent='AGUARDANDO RESPOSTA';
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='1') showAnswer('SIM');
+  if(e.key==='2') showAnswer('NÃO');
+  if(e.key==='3') showAnswer('IMPRECISÃO');
+  if(e.code==='Space'){e.preventDefault();clearAnswer();}
+});
+</script>
+</body>
+</html>
