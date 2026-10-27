@@ -24,10 +24,10 @@ body{
 .app{width:min(1100px,100%); display:grid; gap:22px}
 h1{margin:0;text-align:center;font-size:clamp(30px,4vw,48px)}
 .sub{text-align:center;color:var(--muted);margin-top:-12px;font-size:18px}
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.controls{display:flex;justify-content:center;gap:12px;order:3;flex-wrap:wrap}
 button{
-  border:0;border-radius:18px;padding:20px 16px;
-  font-size:clamp(20px,2.5vw,30px);font-weight:900;cursor:pointer;
+  border:0;border-radius:14px;padding:10px 18px;min-width:130px;
+  font-size:clamp(15px,1.8vw,20px);font-weight:900;cursor:pointer;
   box-shadow:0 12px 28px rgba(0,0,0,.28);
   transition:.15s transform,.15s filter;
 }
@@ -55,8 +55,8 @@ button:active{transform:scale(.99)}
 .imp-text{color:#fff4bf;text-shadow:0 0 25px rgba(245,200,75,.95),0 0 60px rgba(245,200,75,.65)}
 .hint{text-align:center;color:var(--muted);font-size:14px}
 @media(max-width:700px){
-  .controls{grid-template-columns:1fr}
   .display{min-height:330px}
+  button{min-width:105px;padding:9px 14px}
 }
 </style>
 </head>
@@ -65,14 +65,14 @@ button:active{transform:scale(.99)}
   <h1>Painel de Respostas</h1>
   <div class="sub">Quem sou eu tributário?</div>
 
+  <div id="display" class="display">
+    <div id="answer" class="answer idle">AGUARDANDO RESPOSTA</div>
+  </div>
+
   <div class="controls">
     <button class="bsim" onclick="showAnswer('SIM')">SIM</button>
     <button class="bnao" onclick="showAnswer('NÃO')">NÃO</button>
     <button class="bimp" onclick="showAnswer('IMPRECISÃO')">IMPRECISÃO</button>
-  </div>
-
-  <div id="display" class="display">
-    <div id="answer" class="answer idle">AGUARDANDO RESPOSTA</div>
   </div>
 
   <div class="hint">Atalhos: 1 = SIM • 2 = NÃO • 3 = IMPRECISÃO • Espaço = limpar</div>
@@ -81,6 +81,7 @@ button:active{transform:scale(.99)}
 <script>
 const display = document.getElementById('display');
 const answer = document.getElementById('answer');
+let resetTimer = null;
 
 function showAnswer(value){
   display.className='display';
@@ -97,9 +98,13 @@ function showAnswer(value){
     answer.classList.add('imp-text');
   }
   answer.textContent=value;
+
+  if (resetTimer) clearTimeout(resetTimer);
+  resetTimer = setTimeout(clearAnswer, 5000);
 }
 
 function clearAnswer(){
+  if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; }
   display.className='display';
   answer.className='answer idle';
   answer.textContent='AGUARDANDO RESPOSTA';
